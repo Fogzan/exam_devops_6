@@ -35,13 +35,10 @@ services:
     hostname: wsgi_app
     build: 
       context: .
-      dockerfile: Dockerfile.service
+      dockerfile: Dockerfile
     ports:
       - 5000:5000
     restart: always
-    depends_on:
-      mysql_db:
-        condition: service_healthy
 
 volumes:
   mysql:
