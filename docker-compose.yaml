@@ -11,7 +11,7 @@ services:
       - 8080:80
     environment:
       - PMA_HOST=mysql_db
-      - MYSQL_USERNAME=root
+      - MYSQL_USERNAME=mainroot
       - MYSQL_ROOT_PASSWORD=secret
       - PMA_PORT=3306
       - PMA_ARBITRARY=1
@@ -25,6 +25,8 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=secret
       - MYSQL_DATABASE=cinema
+      - MYSQL_PASSWORD=secret
+      - MYSQL_USER=mainroot
     volumes:
       - mysql:/var/lib/mysql
 
@@ -32,9 +34,14 @@ services:
     container_name: wsgi_app
     hostname: wsgi_app
     build: 
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: Dockerfile.service
     ports:
       - 5000:5000
-      
+    restart: always
+    depends_on:
+      mysql_db:
+        condition: service_healthy
+
 volumes:
   mysql:
