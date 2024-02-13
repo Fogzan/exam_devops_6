@@ -1,12 +1,13 @@
-FROM python:3.8-slim-buster
+FROM python:3.12-slim
 
 EXPOSE 5000
-WORKDIR /myapp
-COPY . /myapp
+WORKDIR /usr/app
+ENV ENV production
 
+COPY requirements.txt /usr/app/
+RUN pip install --only-binary :all: greenlet
 RUN pip install -r requirements.txt
-ENV FLASK_APP=/myapp/app/app.py
-ENV FLASK_RUN_HOST=0.0.0.0
+RUN pip install waitress
 
-# Запускаем миграцию приложения
-CMD ["bash", "-c", "python -m flask run --host=0.0.0.0"]
+COPY /app /usr/app/
+CMD waitress-serve --host 0.0.0.0 --port 5000 app:app
